@@ -61,7 +61,7 @@ print(df.head())
 
 plt.figure(figsize=(12,6))
 for ticker in ["AAPL","MSFT","GOOGL","TSLA","AMZN"]:
-    sns.kdeplot(df[f"Daily Return_{ticker}"].dropna(), label=ticker, shade=True )
+    sns.kdeplot(df[f"Daily Return_{ticker}"].dropna(), label=ticker, fill=True)
 
 plt.xlabel("Daily Return")
 plt.ylabel("Density")
@@ -82,3 +82,23 @@ plt.figure(figsize=(8, 6))
 sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", linewidths=0.5)
 plt.title("Stock Returns Correlation Matrix")
 plt.show()
+
+# Define a rolling window size 
+window_size = 30 #30 days
+
+# Calculate rolling standard deviation ( volatility) for each stock 
+
+for ticker in tickers :
+    df[f"{ticker}_Volatility"]=df[f"{ticker}_Close_{ticker}"].pct_change().rolling(window = window_size).std()
+
+#Plot rolling volatility 
+plt.figure(figsize=(12,6))
+for ticker in tickers :
+    plt.plot(df['Date'],df[f"{ticker}_Volatility"], label=f"{ticker} Volatility")
+
+plt.xlabel('Date')
+plt.ylabel("Rolling Volatility (30-day)")
+plt.title("Stock price Volatility ( 30-day Rolling Standard Deviation)")
+plt.legend()
+plt.show()
+
